@@ -1,112 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>KDE Cash | Orçamento Doméstico</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
-    .app {
-      max-width: 1000px;
-      margin: auto;
-    }
-    h1 { text-align: center; }
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-    }
-    button {
-      background: #0a7cff;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-      gap: 15px;
-    }
-    .metric {
-      text-align: center;
-      font-size: 1.2rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>KDE Cash | Orçamento Doméstico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+  margin: 0;
+  padding: 20px;
+}
+.card {
+  background: #020617;
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}
+button {
+  background: #0a7cff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+.list {
+  margin-top: 20px;
+}
+</style>
 </head>
 <body>
 
-<div class="app">
+<div class="card">
+  <h1>Orçamento Doméstico</h1>
+  <p>Controle seus ganhos e despesas mensalmente.</p>
 
-  <h1>💰 Orçamento Doméstico – KDE Cash</h1>
+  <input type="text" id="desc" placeholder="Descrição">
+  <input type="number" id="value" placeholder="Valor (R$)">
+  <button onclick="add()">Adicionar</button>
 
-  <div class="card">
-    <input type="number" id="renda" placeholder="Renda mensal (R$)">
-    <input type="text" id="desc" placeholder="Descrição do gasto">
-    <select id="cat">
-      <option>Moradia</option>
-      <option>Alimentação</option>
-      <option>Transporte</option>
-      <option>Lazer</option>
-      <option>Outros</option>
-    </select>
-    <input type="number" id="valor" placeholder="Valor (R$)">
-    <button onclick="addGasto()">Adicionar gasto</button>
-  </div>
-
-  <div class="grid">
-    <div class="card metric">Renda<br><strong id="mRenda">R$ 0</strong></div>
-    <div class="card metric">Gastos<br><strong id="mGastos">R$ 0</strong></div>
-    <div class="card metric">Saldo<br><strong id="mSaldo">R$ 0</strong></div>
-  </div>
-
-  <div class="card">
-    <h3>Lista de gastos</h3>
-    <ul id="lista"></ul>
-  </div>
-
+  <div class="list" id="list"></div>
 </div>
 
 <script>
-let gastos = [];
+let items = [];
 
-function addGasto() {
-  const renda = Number(document.getElementById("renda").value);
-  const desc = document.getElementById("desc").value;
-  const cat = document.getElementById("cat").value;
-  const valor = Number(document.getElementById("valor").value);
+function add() {
+  const desc = document.getElementById('desc').value;
+  const value = document.getElementById('value').value;
+  if(!desc || !value) return;
 
-  if (!desc || valor <= 0) return;
-
-  gastos.push({desc, cat, valor});
-  render(renda);
+  items.push({desc, value});
+  render();
 }
 
-function render(renda) {
-  let total = 0;
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  gastos.forEach(g => {
-    total += g.valor;
-    lista.innerHTML += `<li>${g.desc} (${g.cat}) - R$ ${g.valor}</li>`;
+function render() {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  items.forEach(i => {
+    list.innerHTML += `<p>${i.desc} — R$ ${i.value}</p>`;
   });
-
-  document.getElementById("mRenda").innerText = `R$ ${renda}`;
-  document.getElementById("mGastos").innerText = `R$ ${total}`;
-  document.getElementById("mSaldo").innerText = `R$ ${renda - total}`;
 }
 </script>
 
