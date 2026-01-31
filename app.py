@@ -1,5 +1,13 @@
 import streamlit as st
 import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 st.set_page_config(
     page_title="KDE Cash | Orçamento Doméstico",
@@ -80,3 +88,4 @@ st.divider()
 st.caption(
     "Ferramenta educativa. Não constitui recomendação financeira."
 )
+
