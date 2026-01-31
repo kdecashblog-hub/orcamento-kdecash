@@ -6,9 +6,10 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/", response_class=HTMLResponse)
+ @app.get("/", response_class=HTMLResponse)
 def home():
-    return """
+    with open("static/index.html", "r", encoding="utf-8") as f:
+        return f.read() """
     <html>
       <head><title>KDE Cash</title></head>
       <body>
@@ -16,4 +17,7 @@ def home():
       </body>
     </html>
     """
+   
+
+
 
