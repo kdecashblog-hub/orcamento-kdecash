@@ -2,74 +2,177 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>KDE Cash | Orçamento Doméstico</title>
+<title>KDE Cash | App de Orçamento Doméstico</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
+:root {
+  --bg: #0b1220;
+  --card: #111827;
+  --primary: #0a7cff;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
   margin: 0;
-  padding: 20px;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
-.card {
+
+header {
   background: #020617;
-  border-radius: 14px;
-  padding: 20px;
-  max-width: 800px;
-  margin: auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-input, button {
+
+header h1 {
+  font-size: 20px;
+  margin: 0;
+  color: var(--primary);
+}
+
+header a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+input, select, button {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
+  font-size: 14px;
 }
+
+input, select {
+  background: #020617;
+  color: var(--text);
+}
+
 button {
-  background: #0a7cff;
+  background: var(--primary);
   color: white;
   font-weight: bold;
   cursor: pointer;
 }
-.list {
-  margin-top: 20px;
+
+.list p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.total {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--primary);
 }
 </style>
 </head>
+
 <body>
 
-<div class="card">
-  <h1>Orçamento Doméstico</h1>
-  <p>Controle seus ganhos e despesas mensalmente.</p>
+<header>
+  <h1>KDE Cash</h1>
+  <a href="https://kdecash.com" target="_blank">Voltar ao site</a>
+</header>
 
-  <input type="text" id="desc" placeholder="Descrição">
-  <input type="number" id="value" placeholder="Valor (R$)">
-  <button onclick="add()">Adicionar</button>
+<div class="container">
 
-  <div class="list" id="list"></div>
+  <div class="grid">
+
+    <div class="card">
+      <h2>➕ Nova movimentação</h2>
+      <input type="text" id="desc" placeholder="Descrição">
+      <input type="number" id="value" placeholder="Valor (R$)">
+      <select id="type">
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select>
+      <button onclick="add()">Adicionar</button>
+    </div>
+
+    <div class="card">
+      <h2>💰 Saldo atual</h2>
+      <div class="total" id="total">R$ 0,00</div>
+      <p class="muted">Resumo automático das movimentações</p>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h2>📋 Histórico</h2>
+    <div class="list" id="list"></div>
+  </div>
+
 </div>
 
 <script>
 let items = [];
+let total = 0;
 
 function add() {
-  const desc = document.getElementById('desc').value;
-  const value = document.getElementById('value').value;
-  if(!desc || !value) return;
+  const desc = descInput.value;
+  const value = parseFloat(valueInput.value);
+  const type = typeSelect.value;
 
-  items.push({desc, value});
+  if (!desc || !value) return;
+
+  items.push({ desc, value, type });
+
+  total += type === 'entrada' ? value : -value;
+
   render();
 }
 
 function render() {
+  document.getElementById('total').innerText =
+    'R$ ' + total.toFixed(2).replace('.', ',');
+
   const list = document.getElementById('list');
   list.innerHTML = '';
+
   items.forEach(i => {
-    list.innerHTML += `<p>${i.desc} — R$ ${i.value}</p>`;
+    list.innerHTML += `<p>${i.type === 'entrada' ? '➕' : '➖'} ${i.desc} — R$ ${i.value}</p>`;
   });
+
+  descInput.value = '';
+  valueInput.value = '';
 }
 </script>
 
 </body>
 </html>
+
