@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>KDE Cash | Orçamento Doméstico</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .app {
+      max-width: 1000px;
+      margin: auto;
+    }
+    h1 { text-align: center; }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    button {
+      background: #0a7cff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 15px;
+    }
+    .metric {
+      text-align: center;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <h1>💰 Orçamento Doméstico – KDE Cash</h1>
+
+  <div class="card">
+    <input type="number" id="renda" placeholder="Renda mensal (R$)">
+    <input type="text" id="desc" placeholder="Descrição do gasto">
+    <select id="cat">
+      <option>Moradia</option>
+      <option>Alimentação</option>
+      <option>Transporte</option>
+      <option>Lazer</option>
+      <option>Outros</option>
+    </select>
+    <input type="number" id="valor" placeholder="Valor (R$)">
+    <button onclick="addGasto()">Adicionar gasto</button>
+  </div>
+
+  <div class="grid">
+    <div class="card metric">Renda<br><strong id="mRenda">R$ 0</strong></div>
+    <div class="card metric">Gastos<br><strong id="mGastos">R$ 0</strong></div>
+    <div class="card metric">Saldo<br><strong id="mSaldo">R$ 0</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>Lista de gastos</h3>
+    <ul id="lista"></ul>
+  </div>
+
+</div>
+
+<script>
+let gastos = [];
+
+function addGasto() {
+  const renda = Number(document.getElementById("renda").value);
+  const desc = document.getElementById("desc").value;
+  const cat = document.getElementById("cat").value;
+  const valor = Number(document.getElementById("valor").value);
+
+  if (!desc || valor <= 0) return;
+
+  gastos.push({desc, cat, valor});
+  render(renda);
+}
+
+function render(renda) {
+  let total = 0;
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  gastos.forEach(g => {
+    total += g.valor;
+    lista.innerHTML += `<li>${g.desc} (${g.cat}) - R$ ${g.valor}</li>`;
+  });
+
+  document.getElementById("mRenda").innerText = `R$ ${renda}`;
+  document.getElementById("mGastos").innerText = `R$ ${total}`;
+  document.getElementById("mSaldo").innerText = `R$ ${renda - total}`;
+}
+</script>
+
+</body>
+</html>
